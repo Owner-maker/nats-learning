@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"nats-learning/configs"
 )
 
 func initConfig() error {
@@ -14,12 +14,14 @@ func initConfig() error {
 }
 
 func main() {
-	if err := initConfig(); err != nil {
+	config, err := configs.LoadConfig(".")
+	if err != nil {
 		logrus.Fatalf("error while initializing config file: %s", err.Error())
 	}
+	logrus.Print("successfully initialized config file")
 
 	// connect to nats streaming server
-	sc, err := stan.Connect(viper.GetString("nats.clusterID"), viper.GetString("nats.clientProducer"), stan.NatsURL(viper.GetString("nats.serverURL")))
+	sc, err := stan.Connect(config.ClusterId, config.ClientProducer, stan.NatsURL(config.NatsUrl))
 	if err != nil {
 		logrus.Fatalf("error while connnecting to nats streaming server: %s", err.Error())
 	}
@@ -29,7 +31,6 @@ func main() {
 			logrus.Fatalf("error while closing publisher connection to nats streaming server: %s", err.Error())
 		}
 	}(sc)
-
-	fmt.Println(sc)
+	logrus.Print("successfully connected to nats streaming server")
 
 }

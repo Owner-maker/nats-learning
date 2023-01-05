@@ -5,7 +5,7 @@ services:
     restart: always
     hostname: $POSTGRES_HOST
     env_file:
-      - .env
+      - app.env
     ports:
       - ${PC_POSTGRES_PORT}:${CONT_POSTGRES_PORT}
     volumes:
