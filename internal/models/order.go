@@ -1,18 +1,18 @@
 package models
 
 type Order struct {
-	OrderUid          string   `json:"order_uid" binding:"required"`
-	TrackNumber       string   `json:"track_number" binding:"required"`
-	Entry             string   `json:"entry" binding:"required"`
-	Locale            string   `json:"locale" binding:"required"`
-	InternalSignature string   `json:"internal_signature" binding:"required"`
-	CustomerId        string   `json:"customer_id" binding:"required"`
-	DeliveryService   string   `json:"delivery_service" binding:"required"`
-	ShardKey          string   `json:"shard_key" binding:"required"`
-	SmId              int      `json:"sm_id" binding:"required"`
-	DateCreated       string   `json:"date_created" binding:"required"`
-	OofShard          string   `json:"oof_shard" binding:"required"`
-	Delivery          Delivery `json:"delivery" binding:"required"`
-	Payment           Payment  `json:"payment" binding:"required"`
-	Items             []Item   `json:"items" binding:"required"`
+	OrderUid          string   `json:"order_uid" validate:"required,min=19,max=19"`
+	TrackNumber       string   `json:"track_number" validate:"required,min=14,max=14"`
+	Entry             string   `json:"entry" validate:"required,min=4,max=4"`
+	Locale            string   `json:"locale" validate:"oneof=ru en"`
+	InternalSignature string   `json:"internal_signature"`
+	CustomerId        string   `json:"customer_id" validate:"required,min=4,max=4"`
+	DeliveryService   string   `json:"delivery_service" validate:"required,min=5,max=5"`
+	ShardKey          string   `json:"shard_key"`
+	SmId              int      `json:"sm_id" validate:"gte=0,lte=100"`
+	DateCreated       string   `json:"date_created" format:"2006-01-02T06:22:19Z" validate:"required"`
+	OofShard          string   `json:"oof_shard" validate:"required,max=2"`
+	Delivery          Delivery `json:"delivery" validate:"required"`
+	Payment           Payment  `json:"payment" validate:"required"`
+	Items             []Item   `json:"items" validate:"required"`
 }

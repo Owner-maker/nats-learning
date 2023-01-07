@@ -1,14 +1,14 @@
 package models
 
 type Payment struct {
-	Transaction  string `json:"transaction" binding:"required"`
-	RequestId    string `json:"request_id" binding:"required"`
-	Currency     string `json:"currency" binding:"required"`
-	Provider     string `json:"provider" binding:"required"`
-	Amount       int    `json:"amount" binding:"required"`
-	PaymentDt    int    `json:"payment_dt" binding:"required"`
-	Bank         string `json:"bank" binding:"required"`
-	DeliveryCost int    `json:"delivery_cost" binding:"required"`
-	GoodsTotal   int    `json:"goods_total" binding:"required"`
-	CustomFee    int    `json:"custom_fee" binding:"required"`
+	Transaction  string `json:"transaction" validate:"required"`
+	RequestId    string `json:"request_id"`
+	Currency     string `json:"currency" validate:"required"`
+	Provider     string `json:"provider" validate:"required"`
+	Amount       int    `json:"amount" validate:"gt=0"`
+	PaymentDt    int    `json:"payment_dt" validate:"required"`
+	Bank         string `json:"bank" validate:"required"`
+	DeliveryCost int    `json:"delivery_cost" validate:"gt=0"`
+	GoodsTotal   int    `json:"goods_total" validate:"gt=0"`
+	CustomFee    int    `json:"custom_fee" validate:"gte=0"`
 }

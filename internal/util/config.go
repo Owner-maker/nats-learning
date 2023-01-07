@@ -1,4 +1,4 @@
-package configs
+package util
 
 import "github.com/spf13/viper"
 
@@ -19,6 +19,7 @@ type Config struct {
 	ClientProducer      string `mapstructure:"CLIENT_PRODUCER"`
 	ClientSubscriber    string `mapstructure:"CLIENT_SUBSCRIBER"`
 	JsonStaticModelPath string `mapstructure:"JSON_STATIC_MODEL_PATH"`
+	NatsSubject         string `mapstructure:"NATS_SUBJECT"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
