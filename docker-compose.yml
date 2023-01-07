@@ -21,6 +21,7 @@ services:
       - "--cluster_id"
       - ${CLUSTER_ID}
     image: library/nats-streaming:latest
+    restart: always
     container_name: nats-streaming
     ports:
       - ${PC_NATS_PORT1}:${CONT_NATS_PORT1}
