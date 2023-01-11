@@ -4,12 +4,12 @@ import (
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
 	"io"
-	"nats-learning/internal/util"
+	"nats-learning/internal/configs"
 	"os"
 )
 
 func main() {
-	config, err := util.LoadConfig(".")
+	config, err := configs.LoadConfig(".")
 	if err != nil {
 		logrus.Fatalf("error while initializing config file: %s", err.Error())
 	}
@@ -44,7 +44,7 @@ func main() {
 	}(dataJson)
 	byteValue, _ := io.ReadAll(dataJson)
 
-	// send json static data to the nats streaming server
+	// send json static repository to the nats streaming server
 	err = sc.Publish(config.NatsSubject, byteValue)
 	if err != nil {
 		logrus.Fatalf("error while publishing json static file to the nats streaming server: %s", err.Error())

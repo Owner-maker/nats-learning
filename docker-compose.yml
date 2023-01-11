@@ -9,7 +9,7 @@ services:
     ports:
       - ${PC_POSTGRES_PORT}:${CONT_POSTGRES_PORT}
     volumes:
-      - data:/var/lib/postgresql/data
+      - repository:/var/lib/postgresql/repository
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -27,7 +27,7 @@ services:
       - ${PC_NATS_PORT1}:${CONT_NATS_PORT1}
       - ${PC_NATS_PORT2}:${CONT_NATS_PORT2}
     volumes:
-      - ./volumes/nats_data_store:/data:Z
+      - ./volumes/nats_data_store:/repository:Z
 
 volumes:
   data:
