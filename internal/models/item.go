@@ -1,6 +1,7 @@
 package models
 
 type Item struct {
+	Id          int    `json:"id" gorm:"primary_key"`
 	ChrtId      int    `json:"chrt_id" validate:"required"`
 	TrackNumber string `json:"track_number" validate:"required,min=14,max=14"`
 	Price       int    `json:"price" validate:"gt=0"`

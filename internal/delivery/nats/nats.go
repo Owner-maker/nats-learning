@@ -40,6 +40,7 @@ func Subscribe(wg *sync.WaitGroup, validator *validator.Validate, sc stan.Conn, 
 	}
 	for {
 		if !sub.IsValid() {
+			wg.Done()
 			break
 		}
 	}

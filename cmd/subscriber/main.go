@@ -6,7 +6,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"nats-learning/internal/configs"
 	"nats-learning/internal/delivery/nats"
-	"nats-learning/internal/repository"
+	"nats-learning/internal/repository/cache"
+	"nats-learning/internal/repository/postgres"
 	"sync"
 )
 
@@ -17,9 +18,9 @@ func main() {
 	// parse configuration
 	config, err := configs.LoadConfig(".")
 	if err != nil {
-		logrus.Fatalf("error while initializing config file: %s", err.Error())
+		logrus.Fatalf("error while parsing config file: %s", err.Error())
 	}
-	logrus.Print("successfully initialized config file")
+	logrus.Print("successfully parsed config file")
 
 	// connect to the nats streaming server
 	sc, err := nats.Connect(
@@ -46,17 +47,25 @@ func main() {
 	}()
 
 	//connect to the postgres
-	repository.ConnectDB(
-		config.PostgresHost,
-		config.PcPostgresPort,
-		config.PostgresUser,
-		config.PostgresDb,
-		config.PostgresPassword,
-		config.PostgresSslMode)
+	_, err = postgres.ConnectDB(
+		postgres.Config{
+			Host:     config.PostgresHost,
+			Port:     config.PcPostgresPort,
+			Username: config.PostgresUser,
+			Password: config.PostgresPassword,
+			DbName:   config.PostgresDb,
+			SslMode:  config.PostgresSslMode,
+		},
+	)
+
+	if err != nil {
+		logrus.Fatal(err)
+		return
+	}
 
 	//init cache
-	var cache repository.Cache
-	cache.NewCache()
+	_ = cache.NewOrderCache(cache.NewCache())
+	logrus.Print("successfully initialized cache")
 
 	wg.Wait()
 }

@@ -1,6 +1,7 @@
 package models
 
 type Delivery struct {
+	Id      int    `json:"id" gorm:"primary_key"`
 	Name    string `json:"name" validate:"required,max=30"`
 	Phone   string `json:"phone" validate:"required"`
 	Zip     string `json:"zip" validate:"required,max=10"`
