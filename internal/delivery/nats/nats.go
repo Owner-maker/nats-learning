@@ -2,15 +2,23 @@ package nats
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
 	"nats-learning/internal/models"
+	"nats-learning/internal/service"
 	"sync"
 )
 
-func Connect(clusterId string, clientId string, natsUrl string) (stan.Conn, error) {
+type Nats struct {
+	service *service.Service
+}
+
+func NewNats(s *service.Service) *Nats {
+	return &Nats{service: s}
+}
+
+func (n Nats) Connect(clusterId string, clientId string, natsUrl string) (stan.Conn, error) {
 	sc, err := stan.Connect(
 		clusterId,
 		clientId,
@@ -24,15 +32,21 @@ func Connect(clusterId string, clientId string, natsUrl string) (stan.Conn, erro
 	return sc, nil
 }
 
-func Subscribe(wg *sync.WaitGroup, validator *validator.Validate, sc stan.Conn, natsSubject string) error {
+func (n Nats) Subscribe(wg *sync.WaitGroup, validator *validator.Validate, sc stan.Conn, natsSubject string) error {
 	defer wg.Done()
 
 	sub, err := sc.Subscribe(natsSubject, func(msg *stan.Msg) {
-		message, err := UnmarshalTheMessage(msg, validator)
+		message, err := n.UnmarshalTheMessage(msg, validator)
 		if err != nil {
 			return
 		}
-		fmt.Println(message)
+
+		err = n.service.PutDbOrder(message)
+		if err != nil {
+			return
+		}
+
+		n.service.PutCachedOrder(message)
 	})
 	if err != nil {
 		logrus.Fatalf("error while subscribing to the nats streaming subject: %s", err.Error())
@@ -53,7 +67,7 @@ func Subscribe(wg *sync.WaitGroup, validator *validator.Validate, sc stan.Conn, 
 	return nil
 }
 
-func UnmarshalTheMessage(m *stan.Msg, validator *validator.Validate) (models.Order, error) {
+func (n Nats) UnmarshalTheMessage(m *stan.Msg, validator *validator.Validate) (models.Order, error) {
 	var order models.Order
 	err := json.Unmarshal(m.Data, &order)
 	err = validator.Struct(&order)

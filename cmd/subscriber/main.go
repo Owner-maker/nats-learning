@@ -5,15 +5,16 @@ import (
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
 	"nats-learning/internal/configs"
+	"nats-learning/internal/delivery/http"
 	"nats-learning/internal/delivery/nats"
 	"nats-learning/internal/repository/cache"
 	"nats-learning/internal/repository/postgres"
+	"nats-learning/internal/service"
 	"sync"
 )
 
 func main() {
 	var validate = validator.New()
-	var wg sync.WaitGroup
 
 	// parse configuration
 	config, err := configs.LoadConfig(".")
@@ -22,8 +23,42 @@ func main() {
 	}
 	logrus.Print("successfully parsed config file")
 
+	//init cache
+	orderCache := cache.NewOrderCache(cache.NewCache())
+
+	logrus.Print("successfully initialized cache")
+
+	//connect to the postgres
+	db, err := postgres.ConnectDB(
+		postgres.Config{
+			Host:     config.PostgresHost,
+			Port:     config.PcPostgresPort,
+			Username: config.PostgresUser,
+			Password: config.PostgresPassword,
+			DbName:   config.PostgresDb,
+			SslMode:  config.PostgresSslMode,
+		},
+	)
+	if err != nil {
+		logrus.Fatal(err)
+		return
+	}
+
+	orderPostgres := postgres.NewOrderPostgres(db)
+
+	//create service
+	s := service.NewService(*orderCache, *orderPostgres)
+	//fill the cache from postgres
+	err = s.PutOrdersFromDbToCache()
+	if err != nil {
+		logrus.Fatal(err)
+		return
+	}
+
 	// connect to the nats streaming server
-	sc, err := nats.Connect(
+	natsStreaming := nats.NewNats(s)
+
+	sc, err := natsStreaming.Connect(
 		config.ClusterId,
 		config.ClientSubscriber,
 		config.NatsUrl)
@@ -38,34 +73,24 @@ func main() {
 	}(sc)
 
 	//subscribe to the nats subject "orders"
+	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		err = nats.Subscribe(&wg, validate, sc, config.NatsSubject)
+		err = natsStreaming.Subscribe(&wg, validate, sc, config.NatsSubject)
 		if err != nil {
 			return
 		}
 	}()
+	logrus.Print("successfully subscribed to the nats streaming subject orders")
+	logrus.Print("Service is successfully started...")
 
-	//connect to the postgres
-	_, err = postgres.ConnectDB(
-		postgres.Config{
-			Host:     config.PostgresHost,
-			Port:     config.PcPostgresPort,
-			Username: config.PostgresUser,
-			Password: config.PostgresPassword,
-			DbName:   config.PostgresDb,
-			SslMode:  config.PostgresSslMode,
-		},
-	)
-
+	// init handler
+	httpHandler := http.NewHandler(s)
+	err = httpHandler.InitRoutes().Run()
 	if err != nil {
 		logrus.Fatal(err)
 		return
 	}
-
-	//init cache
-	_ = cache.NewOrderCache(cache.NewCache())
-	logrus.Print("successfully initialized cache")
 
 	wg.Wait()
 }

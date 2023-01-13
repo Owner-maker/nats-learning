@@ -7,13 +7,6 @@ import (
 	"nats-learning/internal/models"
 )
 
-const (
-	ordersTable     = "orders"
-	paymentsTable   = "payments"
-	itemsTable      = "items"
-	deliveriesTable = "deliveries"
-)
-
 type Config struct {
 	Host     string
 	Port     string

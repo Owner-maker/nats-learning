@@ -21,8 +21,8 @@ func NewHandler(s *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
-	router.GET("/order:uid", h.GetOrderById)
-	router.GET("/orders", h.GetAllOrders)
+	router.GET("api/order:uid", h.GetOrderById)
+	router.GET("api/orders", h.GetAllOrders)
 
 	return router
 }
