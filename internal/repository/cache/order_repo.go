@@ -36,18 +36,20 @@ func (o *OrderCache) GetOrder(uid string) (models.Order, error) {
 func (o *OrderCache) GetAllOrders() ([]models.Order, error) {
 	o.cch.Mutex.RLock()
 	defer o.cch.Mutex.RUnlock()
-	var orders []models.Order
 
-	if len(o.cch.Data) != 0 {
-		orders = make([]models.Order, len(o.cch.Data), len(o.cch.Data))
+	if len(o.cch.Data) == 0 {
+		return []models.Order{}, nil
 	}
+	orders := make([]models.Order, len(o.cch.Data), len(o.cch.Data))
 
+	i := 0
 	for _, valueMap := range o.cch.Data {
 		valueOrder, ok := valueMap.(models.Order)
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("failed to convert order with uid %s to its struct", valueOrder.OrderUid))
 		}
-		orders = append(orders, valueOrder)
+		orders[i] = valueOrder
+		i++
 	}
 	return orders, nil
 }

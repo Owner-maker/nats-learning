@@ -11,11 +11,12 @@ import (
 )
 
 type Nats struct {
-	service *service.Service
+	service   *service.Service
+	validator *validator.Validate
 }
 
-func NewNats(s *service.Service) *Nats {
-	return &Nats{service: s}
+func NewNats(s *service.Service, v *validator.Validate) *Nats {
+	return &Nats{service: s, validator: v}
 }
 
 func (n Nats) Connect(clusterId string, clientId string, natsUrl string) (stan.Conn, error) {
@@ -32,11 +33,11 @@ func (n Nats) Connect(clusterId string, clientId string, natsUrl string) (stan.C
 	return sc, nil
 }
 
-func (n Nats) Subscribe(wg *sync.WaitGroup, validator *validator.Validate, sc stan.Conn, natsSubject string) error {
+func (n Nats) Subscribe(wg *sync.WaitGroup, sc stan.Conn, natsSubject string) error {
 	defer wg.Done()
 
 	sub, err := sc.Subscribe(natsSubject, func(msg *stan.Msg) {
-		message, err := n.UnmarshalTheMessage(msg, validator)
+		message, err := n.UnmarshalTheMessage(msg)
 		if err != nil {
 			return
 		}
@@ -45,8 +46,8 @@ func (n Nats) Subscribe(wg *sync.WaitGroup, validator *validator.Validate, sc st
 		if err != nil {
 			return
 		}
-
 		n.service.PutCachedOrder(message)
+		logrus.Printf("Successfully saved order with uid %s", message.OrderUid)
 	})
 	if err != nil {
 		logrus.Fatalf("error while subscribing to the nats streaming subject: %s", err.Error())
@@ -60,19 +61,19 @@ func (n Nats) Subscribe(wg *sync.WaitGroup, validator *validator.Validate, sc st
 	}
 	err = sub.Unsubscribe()
 	if err != nil {
-		logrus.Fatalf("error while unsubscribing from the nats streaming subject: %s", err.Error())
+		logrus.Errorf("error while unsubscribing from the nats streaming subject: %s", err.Error())
 		return err
 	}
-	logrus.Fatalf("successfully unsubscribed from the nats streaming subject: %s", err.Error())
+	logrus.Printf("successfully unsubscribed from the nats streaming subject: %s", err.Error())
 	return nil
 }
 
-func (n Nats) UnmarshalTheMessage(m *stan.Msg, validator *validator.Validate) (models.Order, error) {
+func (n Nats) UnmarshalTheMessage(m *stan.Msg) (models.Order, error) {
 	var order models.Order
 	err := json.Unmarshal(m.Data, &order)
-	err = validator.Struct(&order)
+	err = n.validator.Struct(&order)
 	if err != nil {
-		logrus.Fatalf("error while unmarshalling message to model : %s", err.Error())
+		logrus.Errorf("error while unmarshalling message to model : %s", err.Error())
 		return order, err
 	}
 	return order, nil

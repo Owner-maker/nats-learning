@@ -11,6 +11,6 @@ type Cache struct {
 
 func NewCache() *Cache {
 	var cache Cache
-	cache.Data = make(map[string]interface{})
+	cache.Data = make(map[string]interface{}, 0)
 	return &cache
 }

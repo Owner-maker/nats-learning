@@ -14,8 +14,6 @@ import (
 )
 
 func main() {
-	var validate = validator.New()
-
 	// parse configuration
 	config, err := configs.LoadConfig(".")
 	if err != nil {
@@ -32,7 +30,7 @@ func main() {
 	db, err := postgres.ConnectDB(
 		postgres.Config{
 			Host:     config.PostgresHost,
-			Port:     config.PcPostgresPort,
+			Port:     config.PostgresPort,
 			Username: config.PostgresUser,
 			Password: config.PostgresPassword,
 			DbName:   config.PostgresDb,
@@ -41,7 +39,6 @@ func main() {
 	)
 	if err != nil {
 		logrus.Fatal(err)
-		return
 	}
 
 	orderPostgres := postgres.NewOrderPostgres(db)
@@ -52,11 +49,10 @@ func main() {
 	err = s.PutOrdersFromDbToCache()
 	if err != nil {
 		logrus.Fatal(err)
-		return
 	}
 
 	// connect to the nats streaming server
-	natsStreaming := nats.NewNats(s)
+	natsStreaming := nats.NewNats(s, validator.New())
 
 	sc, err := natsStreaming.Connect(
 		config.ClusterId,
@@ -68,7 +64,7 @@ func main() {
 	defer func(sc stan.Conn) {
 		err = sc.Close()
 		if err != nil {
-			logrus.Fatalf("error while closing subscriber connection to the nats streaming server: %s", err.Error())
+			logrus.Errorf("error while closing subscriber connection to the nats streaming server: %s", err.Error())
 		}
 	}(sc)
 
@@ -76,7 +72,7 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		err = natsStreaming.Subscribe(&wg, validate, sc, config.NatsSubject)
+		err = natsStreaming.Subscribe(&wg, sc, config.NatsSubject)
 		if err != nil {
 			return
 		}
@@ -89,7 +85,6 @@ func main() {
 	err = httpHandler.InitRoutes().Run()
 	if err != nil {
 		logrus.Fatal(err)
-		return
 	}
 
 	wg.Wait()

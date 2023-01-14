@@ -22,7 +22,7 @@ func (o *OrderPostgres) Create(ord models.Order) error {
 		return nil
 	})
 	if err != nil {
-		logrus.Fatal(err)
+		logrus.Print(err)
 		return err
 	}
 	return nil
