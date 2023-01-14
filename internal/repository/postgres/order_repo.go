@@ -31,7 +31,12 @@ func (o *OrderPostgres) Create(ord models.Order) error {
 func (o *OrderPostgres) GetAll() ([]models.Order, error) {
 	var orders []models.Order
 	err := o.db.Transaction(func(tx *gorm.DB) error {
-		if err := o.db.Find(&orders).Error; err != nil {
+		if err := o.db.
+			Model(&models.Order{}).
+			Preload("Delivery").
+			Preload("Payment").
+			Preload("Items").
+			Find(&orders).Error; err != nil {
 			return err
 		}
 		return nil

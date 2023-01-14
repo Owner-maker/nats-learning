@@ -16,7 +16,7 @@ type Order struct {
 	SmId              int       `json:"sm_id" validate:"gte=0,lte=100"`
 	DateCreated       time.Time `json:"date_created" format:"2006-01-02T06:22:19Z" validate:"required"`
 	OofShard          string    `json:"oof_shard" validate:"required,max=2"`
-	Delivery          Delivery  `json:"delivery" validate:"required"`
-	Payment           Payment   `json:"payment" validate:"required"`
-	Items             []Item    `json:"items" validate:"required"`
+	Delivery          Delivery  `json:"delivery" validate:"required" gorm:"foreignKey:OrderRefer"`
+	Payment           Payment   `json:"payment" validate:"required" gorm:"foreignKey:OrderRefer"`
+	Items             []Item    `json:"items" validate:"required" gorm:"foreignKey:OrderRefer"`
 }

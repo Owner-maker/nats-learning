@@ -1,7 +1,7 @@
 package models
 
 type Payment struct {
-	Id           int    `json:"id" gorm:"primary_key"`
+	OrderRefer   string `json:"-"`
 	Transaction  string `json:"transaction" validate:"required"`
 	RequestId    string `json:"request_id"`
 	Currency     string `json:"currency" validate:"required"`
