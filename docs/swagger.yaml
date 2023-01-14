@@ -1,0 +1,253 @@
+basePath: /
+definitions:
+  http.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  http.getAllOrdersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Order'
+        type: array
+    type: object
+  models.Delivery:
+    properties:
+      address:
+        maxLength: 30
+        type: string
+      city:
+        maxLength: 30
+        type: string
+      email:
+        maxLength: 30
+        type: string
+      name:
+        maxLength: 30
+        type: string
+      phone:
+        type: string
+      region:
+        maxLength: 30
+        type: string
+      zip:
+        maxLength: 10
+        type: string
+    required:
+    - address
+    - city
+    - email
+    - name
+    - phone
+    - region
+    - zip
+    type: object
+  models.Item:
+    properties:
+      brand:
+        type: string
+      chrt_id:
+        type: integer
+      name:
+        type: string
+      nm_id:
+        type: integer
+      price:
+        type: integer
+      rid:
+        maxLength: 21
+        minLength: 21
+        type: string
+      sale:
+        type: integer
+      size:
+        type: string
+      status:
+        minimum: 0
+        type: integer
+      total_price:
+        type: integer
+      track_number:
+        maxLength: 14
+        minLength: 14
+        type: string
+    required:
+    - brand
+    - chrt_id
+    - name
+    - nm_id
+    - rid
+    - size
+    - status
+    - track_number
+    type: object
+  models.Order:
+    properties:
+      customer_id:
+        maxLength: 4
+        minLength: 4
+        type: string
+      date_created:
+        format: "2006-01-02T06:22:19Z"
+        type: string
+      delivery:
+        $ref: '#/definitions/models.Delivery'
+      delivery_service:
+        maxLength: 5
+        minLength: 5
+        type: string
+      entry:
+        maxLength: 4
+        minLength: 4
+        type: string
+      internal_signature:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/models.Item'
+        type: array
+      locale:
+        enum:
+        - ru
+        - en
+        type: string
+      oof_shard:
+        maxLength: 2
+        type: string
+      order_uid:
+        maxLength: 19
+        minLength: 19
+        type: string
+      payment:
+        $ref: '#/definitions/models.Payment'
+      shardkey:
+        type: string
+      sm_id:
+        maximum: 100
+        minimum: 0
+        type: integer
+      track_number:
+        maxLength: 14
+        minLength: 14
+        type: string
+    required:
+    - customer_id
+    - date_created
+    - delivery
+    - delivery_service
+    - entry
+    - items
+    - oof_shard
+    - order_uid
+    - payment
+    - track_number
+    type: object
+  models.Payment:
+    properties:
+      amount:
+        type: integer
+      bank:
+        type: string
+      currency:
+        type: string
+      custom_fee:
+        minimum: 0
+        type: integer
+      delivery_cost:
+        type: integer
+      goods_total:
+        type: integer
+      payment_dt:
+        type: integer
+      provider:
+        type: string
+      request_id:
+        type: string
+      transaction:
+        type: string
+    required:
+    - bank
+    - currency
+    - payment_dt
+    - provider
+    - transaction
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: artem.lisitsynn@gmail.com
+    name: Artem Lisitsyn
+  description: This service uses a nats streaming server as message broker to get
+    model Order from it and stores into the postgres db & app's cache. Provides a
+    way to get information about orders from cache via the HTTP requests.
+  title: Nats learning service
+  version: "1.0"
+paths:
+  /api/order/:uid:
+    get:
+      consumes:
+      - application/json
+      description: Allows to get specific order from the app's cache via its uid
+      operationId: ger-order-by-id
+      parameters:
+      - description: order's uid
+        in: path
+        name: uid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      summary: GetOrderById
+  /api/orders:
+    get:
+      consumes:
+      - application/json
+      description: Allows to get all orders from the app's cache
+      operationId: ger-all-orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.getAllOrdersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      summary: GetAllOrders
+swagger: "2.0"

@@ -13,6 +13,15 @@ import (
 	"sync"
 )
 
+// @title Nats learning service
+// @version 1.0
+// @description This service uses a nats streaming server as message broker to get model Order from it and stores into the postgres db & app's cache. Provides a way to get information about orders from cache via the HTTP requests.
+
+// @host localhost:8080
+// @basePath /
+
+// @contact.name Artem Lisitsyn
+// @contact.email artem.lisitsynn@gmail.com
 func main() {
 	// parse configuration
 	config, err := configs.LoadConfig(".")
