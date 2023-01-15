@@ -2,11 +2,11 @@ package nats
 
 import (
 	"encoding/json"
+	"github.com/Owner-maker/nats-learning/internal/models"
+	"github.com/Owner-maker/nats-learning/internal/service"
 	"github.com/go-playground/validator/v10"
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
-	"nats-learning/internal/models"
-	"nats-learning/internal/service"
 	"sync"
 )
 

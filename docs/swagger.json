@@ -12,7 +12,7 @@
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
-        "/api/order/:uid": {
+        "/api/order/{uid}": {
             "get": {
                 "description": "Allows to get specific order from the app's cache via its uid",
                 "consumes": [
@@ -22,9 +22,11 @@
                     "application/json"
                 ],
                 "summary": "GetOrderById",
-                "operationId": "ger-order-by-id",
+                "operationId": "get-order-by-id",
                 "parameters": [
                     {
+                        "maxLength": 19,
+                        "minLength": 19,
                         "type": "string",
                         "description": "order's uid",
                         "name": "uid",
@@ -76,7 +78,7 @@
                     "application/json"
                 ],
                 "summary": "GetAllOrders",
-                "operationId": "ger-all-orders",
+                "operationId": "get-all-orders",
                 "responses": {
                     "200": {
                         "description": "OK",

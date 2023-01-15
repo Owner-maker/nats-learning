@@ -1,15 +1,15 @@
 package main
 
 import (
+	"github.com/Owner-maker/nats-learning/internal/configs"
+	"github.com/Owner-maker/nats-learning/internal/delivery/http"
+	"github.com/Owner-maker/nats-learning/internal/delivery/nats"
+	"github.com/Owner-maker/nats-learning/internal/repository/cache"
+	"github.com/Owner-maker/nats-learning/internal/repository/postgres"
+	"github.com/Owner-maker/nats-learning/internal/service"
 	"github.com/go-playground/validator/v10"
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
-	"nats-learning/internal/configs"
-	"nats-learning/internal/delivery/http"
-	"nats-learning/internal/delivery/nats"
-	"nats-learning/internal/repository/cache"
-	"nats-learning/internal/repository/postgres"
-	"nats-learning/internal/service"
 	"sync"
 )
 

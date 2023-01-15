@@ -1,9 +1,9 @@
 package service
 
 import (
-	"nats-learning/internal/models"
-	"nats-learning/internal/repository/cache"
-	"nats-learning/internal/repository/postgres"
+	"github.com/Owner-maker/nats-learning/internal/models"
+	"github.com/Owner-maker/nats-learning/internal/repository/cache"
+	"github.com/Owner-maker/nats-learning/internal/repository/postgres"
 )
 
 type Service struct {

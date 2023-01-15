@@ -1,4 +1,4 @@
-module nats-learning
+module github.com/Owner-maker/nats-learning
 
 go 1.19
 
@@ -9,6 +9,7 @@ require (
 	github.com/nats-io/stan.go v0.10.3
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.14.0
+	github.com/swaggo/swag v1.8.9
 )
 
 require (
@@ -63,7 +64,6 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/swaggo/files v1.0.0 // indirect
 	github.com/swaggo/gin-swagger v1.5.3 // indirect
-	github.com/swaggo/swag v1.8.9 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
 	golang.org/x/crypto v0.5.0 // indirect

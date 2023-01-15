@@ -1,9 +1,9 @@
 package postgres
 
 import (
+	"github.com/Owner-maker/nats-learning/internal/models"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
-	"nats-learning/internal/models"
 )
 
 type OrderPostgres struct {

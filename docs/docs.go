@@ -19,7 +19,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/order/:uid": {
+        "/api/order/{uid}": {
             "get": {
                 "description": "Allows to get specific order from the app's cache via its uid",
                 "consumes": [
@@ -29,9 +29,11 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "summary": "GetOrderById",
-                "operationId": "ger-order-by-id",
+                "operationId": "get-order-by-id",
                 "parameters": [
                     {
+                        "maxLength": 19,
+                        "minLength": 19,
                         "type": "string",
                         "description": "order's uid",
                         "name": "uid",
@@ -83,7 +85,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "summary": "GetAllOrders",
-                "operationId": "ger-all-orders",
+                "operationId": "get-all-orders",
                 "responses": {
                     "200": {
                         "description": "OK",

@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"fmt"
+	"github.com/Owner-maker/nats-learning/internal/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"nats-learning/internal/models"
 )
 
 type Config struct {

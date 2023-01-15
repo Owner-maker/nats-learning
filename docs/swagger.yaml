@@ -184,15 +184,17 @@ info:
   title: Nats learning service
   version: "1.0"
 paths:
-  /api/order/:uid:
+  /api/order/{uid}:
     get:
       consumes:
       - application/json
       description: Allows to get specific order from the app's cache via its uid
-      operationId: ger-order-by-id
+      operationId: get-order-by-id
       parameters:
       - description: order's uid
         in: path
+        maxLength: 19
+        minLength: 19
         name: uid
         required: true
         type: string
@@ -225,7 +227,7 @@ paths:
       consumes:
       - application/json
       description: Allows to get all orders from the app's cache
-      operationId: ger-all-orders
+      operationId: get-all-orders
       produces:
       - application/json
       responses:

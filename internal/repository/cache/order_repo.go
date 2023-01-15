@@ -2,8 +2,8 @@ package cache
 
 import (
 	"fmt"
+	"github.com/Owner-maker/nats-learning/internal/models"
 	"github.com/pkg/errors"
-	"nats-learning/internal/models"
 )
 
 type OrderCache struct {

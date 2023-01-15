@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/Owner-maker/nats-learning/internal/configs"
 	"github.com/nats-io/stan.go"
 	"github.com/sirupsen/logrus"
 	"io"
-	"nats-learning/internal/configs"
 	"os"
 )
 
