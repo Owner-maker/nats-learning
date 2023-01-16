@@ -19,7 +19,7 @@ func main() {
 	sc, err := stan.Connect(
 		config.ClusterId,
 		config.ClientProducer,
-		stan.NatsURL(config.NatsUrl))
+		stan.NatsURL(config.NatsUrlPub))
 	if err != nil {
 		logrus.Fatalf("error while connnecting to the nats streaming server: %s", err.Error())
 	}

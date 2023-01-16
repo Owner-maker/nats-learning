@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   database:
+    container_name: postgres
     image: postgres:15-alpine
     restart: always
     hostname: ${POSTGRES_HOST}
@@ -9,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - data:/var/lib/postgresql/repository
+      - data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -28,6 +29,21 @@ services:
       - 8222:${NATS_PORT2}
     volumes:
       - ./volumes/nats_data_store:/repository:Z
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      database:
+        condition: service_healthy
+      nats-streaming:
+        condition: service_started
+    networks:
+      - default
+    ports:
+      - 8080:${APP_PORT}
 
 volumes:
   data:

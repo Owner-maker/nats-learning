@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Owner-maker/nats-learning/internal/configs"
 	"github.com/Owner-maker/nats-learning/internal/delivery/http"
 	"github.com/Owner-maker/nats-learning/internal/delivery/nats"
@@ -66,7 +67,7 @@ func main() {
 	sc, err := natsStreaming.Connect(
 		config.ClusterId,
 		config.ClientSubscriber,
-		config.NatsUrl)
+		config.NatsUrlSub)
 	if err != nil {
 		return
 	}
@@ -91,7 +92,7 @@ func main() {
 
 	// init handler
 	httpHandler := http.NewHandler(s)
-	err = httpHandler.InitRoutes().Run()
+	err = httpHandler.InitRoutes().Run(fmt.Sprintf(":%s", config.AppPort))
 	if err != nil {
 		logrus.Fatal(err)
 	}
