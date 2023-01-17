@@ -5,7 +5,7 @@ import (
 	"github.com/Owner-maker/nats-learning/internal/configs"
 	"github.com/Owner-maker/nats-learning/internal/delivery/http"
 	"github.com/Owner-maker/nats-learning/internal/delivery/nats"
-	"github.com/Owner-maker/nats-learning/internal/repository/cache"
+	"github.com/Owner-maker/nats-learning/internal/repository"
 	"github.com/Owner-maker/nats-learning/internal/repository/postgres"
 	"github.com/Owner-maker/nats-learning/internal/service"
 	"github.com/go-playground/validator/v10"
@@ -34,11 +34,6 @@ func main() {
 	}
 	logrus.Print("successfully parsed config file")
 
-	//init cache
-	orderCache := cache.NewOrderCache(cache.NewCache())
-
-	logrus.Print("successfully initialized cache")
-
 	//connect to the postgres
 	db, err := postgres.ConnectDB(
 		postgres.Config{
@@ -53,11 +48,13 @@ func main() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
+	logrus.Print("successfully connected to the postgres db")
 
-	orderPostgres := postgres.NewOrderPostgres(db)
+	repo := repository.NewRepository(db)
+	logrus.Print("successfully initialized cache")
 
 	//create service
-	s := service.NewService(*orderCache, *orderPostgres)
+	s := service.NewService(repo)
 	//fill the cache from postgres
 	err = s.PutOrdersFromDbToCache()
 	if err != nil {

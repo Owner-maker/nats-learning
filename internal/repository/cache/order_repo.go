@@ -6,21 +6,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-type OrderCache struct {
+type OrderCacheRepo struct {
 	cch *Cache
 }
 
-func NewOrderCache(cch *Cache) *OrderCache {
-	return &OrderCache{cch: cch}
+func NewOrderCache(cch *Cache) *OrderCacheRepo {
+	return &OrderCacheRepo{cch: cch}
 }
 
-func (o *OrderCache) PutOrder(uid string, order models.Order) {
+func (o *OrderCacheRepo) PutOrder(uid string, order models.Order) {
 	o.cch.Mutex.Lock()
 	defer o.cch.Mutex.Unlock()
 	o.cch.Data[uid] = order
 }
 
-func (o *OrderCache) GetOrder(uid string) (models.Order, error) {
+func (o *OrderCacheRepo) GetOrder(uid string) (models.Order, error) {
 	o.cch.Mutex.RLock()
 	defer o.cch.Mutex.RUnlock()
 
@@ -33,7 +33,7 @@ func (o *OrderCache) GetOrder(uid string) (models.Order, error) {
 	return models.Order{}, errors.New(fmt.Sprintf("order with uid %s was not found in cache", uid))
 }
 
-func (o *OrderCache) GetAllOrders() ([]models.Order, error) {
+func (o *OrderCacheRepo) GetAllOrders() ([]models.Order, error) {
 	o.cch.Mutex.RLock()
 	defer o.cch.Mutex.RUnlock()
 

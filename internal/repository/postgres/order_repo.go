@@ -6,15 +6,15 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type OrderPostgres struct {
+type OrderPostgresRepo struct {
 	db *gorm.DB
 }
 
-func NewOrderPostgres(db *gorm.DB) *OrderPostgres {
-	return &OrderPostgres{db: db}
+func NewOrderPostgres(db *gorm.DB) *OrderPostgresRepo {
+	return &OrderPostgresRepo{db: db}
 }
 
-func (o *OrderPostgres) Create(ord models.Order) error {
+func (o *OrderPostgresRepo) Create(ord models.Order) error {
 	err := o.db.Transaction(func(tx *gorm.DB) error {
 		if err := o.db.Create(&ord).Error; err != nil {
 			return err
@@ -28,7 +28,7 @@ func (o *OrderPostgres) Create(ord models.Order) error {
 	return nil
 }
 
-func (o *OrderPostgres) GetAll() ([]models.Order, error) {
+func (o *OrderPostgresRepo) GetAll() ([]models.Order, error) {
 	var orders []models.Order
 	err := o.db.Transaction(func(tx *gorm.DB) error {
 		if err := o.db.
