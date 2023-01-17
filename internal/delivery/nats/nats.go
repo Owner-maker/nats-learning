@@ -19,7 +19,7 @@ func NewNats(s *service.Service, v *validator.Validate) *Nats {
 	return &Nats{service: s, validator: v}
 }
 
-func (n Nats) Connect(clusterId string, clientId string, natsUrl string) (stan.Conn, error) {
+func (n Nats) Connect(clusterId, clientId, natsUrl string) (stan.Conn, error) {
 	sc, err := stan.Connect(
 		clusterId,
 		clientId,

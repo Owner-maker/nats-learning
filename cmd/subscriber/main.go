@@ -111,12 +111,16 @@ func main() {
 
 	logrus.Print("Service is shutting down...")
 
-	if err := srv.Shutdown(context.Background()); err != nil {
+	if err = srv.Shutdown(context.Background()); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
 
-	if err := db.Close(); err != nil {
+	if err = db.Close(); err != nil {
 		logrus.Errorf("error occured on db connection close: %s", err.Error())
+	}
+
+	if err = sc.Close(); err != nil {
+		logrus.Errorf("error occured on nats streaming connection close: %s", err.Error())
 	}
 
 	wg.Wait()
