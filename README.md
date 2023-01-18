@@ -16,7 +16,7 @@ Look file: task.pdf
 5. After the container is launched, the Swagger html page will also be available for the convenience of API testing \
    ```http://localhost:8080/swagger/index.html#/```
 
-**To add** a new Order entity, you must, if desired, ```make changes to the /web/model.json``` file and then build & run special Go script <br>```go run github.com/Owner-maker/nats-learning/cmd/publisher```
+**To add** a new Order entity, you must, if desired, ```make changes to the ./internal/web/model.json``` file and then build & run special Go script <br>```go run github.com/Owner-maker/nats-learning/cmd/publisher```
    OR using a Make utility ```make pub```
 
 ### Technologies:
