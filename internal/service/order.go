@@ -34,3 +34,7 @@ func (s *Service) PutCachedOrder(order models.Order) {
 func (s *Service) PutDbOrder(order models.Order) error {
 	return s.OrderPostgres.Create(order)
 }
+
+func (s *Service) GetDbOrder(uid string) (order models.Order, err error) {
+	return s.OrderPostgres.Get(uid)
+}

@@ -9,6 +9,7 @@ type Order interface {
 	GetCachedOrder(uid string) (models.Order, error)
 	GetAllCachedOrders() ([]models.Order, error)
 	GetAllDbOrders() ([]models.Order, error)
+	GetDbOrder() (models.Order, error)
 	PutOrdersFromDbToCache() error
 	PutCachedOrder(order models.Order)
 	PutDbOrder(order models.Order) error

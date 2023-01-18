@@ -27,6 +27,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	api := router.Group("/api")
 	{
 		api.GET("/order/:uid", h.GetOrderById)
+		api.GET("/order/db/:uid", h.GetDbOrderById)
 		api.GET("/orders", h.GetAllOrders)
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

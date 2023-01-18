@@ -222,6 +222,45 @@ paths:
           schema:
             $ref: '#/definitions/http.errorResponse'
       summary: GetOrderById
+  /api/order/db/{uid}:
+    get:
+      consumes:
+      - application/json
+      description: Allows to get specific order from the postgres database via its
+        uid
+      operationId: get-db-order-by-id
+      parameters:
+      - description: order's uid
+        in: path
+        maxLength: 19
+        minLength: 19
+        name: uid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      summary: GetDbOrderById
   /api/orders:
     get:
       consumes:

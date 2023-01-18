@@ -9,6 +9,7 @@ import (
 
 type OrderPostgres interface {
 	Create(ord models.Order) error
+	Get(uid string) (models.Order, error)
 	GetAll() ([]models.Order, error)
 }
 

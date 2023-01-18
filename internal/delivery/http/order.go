@@ -27,6 +27,28 @@ func (h *Handler) GetOrderById(c *gin.Context) {
 	c.JSON(http.StatusOK, order)
 }
 
+// GetDbOrderById
+// @Summary GetDbOrderById
+// @Description Allows to get specific order from the postgres database via its uid
+// @ID get-db-order-by-id
+// @Accept json
+// @Produce json
+// @Param uid path string true "order's uid" minlength(19)  maxlength(19)
+// @Success 200 {object} models.Order
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/order/db/{uid} [get]
+func (h *Handler) GetDbOrderById(c *gin.Context) {
+	uid := c.Param("uid")
+	order, err := h.service.GetDbOrder(uid)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, order)
+}
+
 // GetAllOrders
 // @Summary GetAllOrders
 // @Description Allows to get all orders from the app's cache
