@@ -32,13 +32,13 @@ Look file: task.pdf
 
 ### <a name="up"></a>HTTP methods:
 
-- [Get the order from the database](#getDbOrder)
-- [Get the order from the cache](#getOrder)
-- [Get all orders from the cache](#getOrders)
+- [Get the order from the database](#getdbOrder)
+- [Get the order from the cache](#getorder)
+- [Get all orders from the cache](#getorders)
 
 ## Request examples:
 
-### <a name="getDbOrder">Get the order from the database</a> - method GET
+### <a name="getdborder">Get the order from the database</a> - method GET
 ```http://localhost:8080/api/order/db/:uid``` 
 
 For example input path parameter - uid -> ```b563feb7b2b84b6teST``` <br>
@@ -95,12 +95,12 @@ Output
 }
 ```
 
-### <a name="getOrder">Get the order from the cache</a> - method GET
+### <a name="getorder">Get the order from the cache</a> - method GET
 ```http://localhost:8080/api/order/:uid``` \
 Input parameter uid \
 Output same as from the method ```Get the order from the database```
 
-### <a name="getOrders">Get all orders from the cache</a> - method GET
+### <a name="getorders">Get all orders from the cache</a> - method GET
 [go to all methods](#up) \
 ```http://localhost:8080/api/orders``` 
 
@@ -176,7 +176,6 @@ For example, status code is  ```500```
 
 ## Stress tests
 ### WRK 
-###### 40 goroutines
 #### Testing method ```api/order/db/:uid``` <br> (from the Postgres DB)
 
 ```
