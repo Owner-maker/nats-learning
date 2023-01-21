@@ -7,3 +7,5 @@ swag:
 pub:
 	go run github.com/Owner-maker/nats-learning/cmd/publisher
 
+test:
+	go test -v ./...

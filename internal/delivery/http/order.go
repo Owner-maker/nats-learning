@@ -19,7 +19,7 @@ import (
 // @Router /api/order/{uid} [get]
 func (h *Handler) GetOrderById(c *gin.Context) {
 	uid := c.Param("uid")
-	order, err := h.service.GetCachedOrder(uid)
+	order, err := h.Order.GetCachedOrder(uid)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -41,7 +41,7 @@ func (h *Handler) GetOrderById(c *gin.Context) {
 // @Router /api/order/db/{uid} [get]
 func (h *Handler) GetDbOrderById(c *gin.Context) {
 	uid := c.Param("uid")
-	order, err := h.service.GetDbOrder(uid)
+	order, err := h.Order.GetDbOrder(uid)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -61,7 +61,7 @@ func (h *Handler) GetDbOrderById(c *gin.Context) {
 // @Failure default {object} errorResponse
 // @Router /api/orders [get]
 func (h *Handler) GetAllOrders(c *gin.Context) {
-	orders, err := h.service.GetAllCachedOrders()
+	orders, err := h.Order.GetAllCachedOrders()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

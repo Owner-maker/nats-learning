@@ -10,15 +10,15 @@ import (
 )
 
 type Handler struct {
-	service *service.Service
+	service.Order
 }
 
 type getAllOrdersResponse struct {
 	Data []models.Order `json:"data"`
 }
 
-func NewHandler(s *service.Service) *Handler {
-	return &Handler{service: s}
+func NewHandler(s service.Order) *Handler {
+	return &Handler{s}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
