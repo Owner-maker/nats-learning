@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Owner-maker/nats-learning/internal/models"
 	"github.com/pkg/errors"
+	"net/http"
 )
 
 type OrderCacheRepo struct {
@@ -28,9 +29,15 @@ func (o *OrderCacheRepo) GetOrder(uid string) (models.Order, error) {
 		if value, ok := orderData.(models.Order); ok {
 			return value, nil
 		}
-		return models.Order{}, errors.New(fmt.Sprintf("failed to convert order with uid %s to its struct", uid))
+		return models.Order{},
+			NewErrorHandler(
+				errors.New(fmt.Sprintf("failed to convert order with uid %s to its struct", uid)),
+				http.StatusInternalServerError)
 	}
-	return models.Order{}, errors.New(fmt.Sprintf("order with uid %s was not found in cache", uid))
+	return models.Order{},
+		NewErrorHandler(
+			errors.New(fmt.Sprintf("order with uid %s was not found in cache", uid)),
+			http.StatusBadRequest)
 }
 
 func (o *OrderCacheRepo) GetAllOrders() ([]models.Order, error) {
@@ -46,7 +53,10 @@ func (o *OrderCacheRepo) GetAllOrders() ([]models.Order, error) {
 	for _, valueMap := range o.cch.Data {
 		valueOrder, ok := valueMap.(models.Order)
 		if !ok {
-			return nil, errors.New(fmt.Sprintf("failed to convert order with uid %s to its struct", valueOrder.OrderUid))
+			return nil,
+				NewErrorHandler(
+					errors.New(fmt.Sprintf("failed to convert order with uid %s to its struct", valueOrder.OrderUid)),
+					http.StatusInternalServerError)
 		}
 		orders[i] = valueOrder
 		i++

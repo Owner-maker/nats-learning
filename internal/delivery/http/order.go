@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/Owner-maker/nats-learning/internal/repository/cache"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,8 +22,13 @@ func (h *Handler) GetOrderById(c *gin.Context) {
 	uid := c.Param("uid")
 	order, err := h.Order.GetCachedOrder(uid)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
+		if val, ok := err.(cache.ErrorHandler); ok {
+			newErrorResponse(c, val.StatusCode, err.Error())
+			return
+		} else {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
 	}
 	c.JSON(http.StatusOK, order)
 }
@@ -43,8 +49,13 @@ func (h *Handler) GetDbOrderById(c *gin.Context) {
 	uid := c.Param("uid")
 	order, err := h.Order.GetDbOrder(uid)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
+		if val, ok := err.(cache.ErrorHandler); ok {
+			newErrorResponse(c, val.StatusCode, err.Error())
+			return
+		} else {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
 	}
 	c.JSON(http.StatusOK, order)
 }
@@ -63,8 +74,13 @@ func (h *Handler) GetDbOrderById(c *gin.Context) {
 func (h *Handler) GetAllOrders(c *gin.Context) {
 	orders, err := h.Order.GetAllCachedOrders()
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
+		if val, ok := err.(cache.ErrorHandler); ok {
+			newErrorResponse(c, val.StatusCode, err.Error())
+			return
+		} else {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
 	}
 	c.JSON(http.StatusOK, getAllOrdersResponse{
 		Data: orders,
