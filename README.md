@@ -228,3 +228,9 @@ Bytes Out     [total, mean]              0, 0.00
 Success       [ratio]                    100.00%
 Status Codes  [code:count]               200:997
 ```
+
+### What would I improve?
+
+1) Do not use an interface{} as a field value of map (inner app's cache) -> problem is in a manual casting type interface{} to the specific value, very resource intensive
+2) Do not use inner Go automigration of tables into the DB, use a stored procedures instead -> for more detailed settings
+3) Make more unit test
